@@ -3,21 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>別尿在地毯上 - Unpacking Style</title>
-    <!-- 引入像素字體與圓潤字體 -->
-    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Nunito:wght@700&display=swap" rel="stylesheet">
+    <title>別尿在地毯上</title>
+    <!-- 引入 Google 復古像素字體 -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #2f3640;
-            --box-base: #e1b12c;
-            --box-dark: #c23616;
-            --text: #2f3640;
+            --sky-top: #2c2c54;
+            --sky-bottom: #706fd3;
+            --ui-bg: #130f40;
+            --ui-border: #a29bfe;
+            --text-light: #f1f2f6;
+            --btn-bg: #4834d4;
+            --btn-hover: #f9ca24;
+            --pee: #f1c40f;
         }
         
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: var(--bg-color);
-            font-family: 'Nunito', '微軟正黑體', sans-serif;
+            background-color: #1e1e2f;
+            font-family: 'Press Start 2P', monospace;
             overflow: hidden; touch-action: none; user-select: none;
             display: flex; justify-content: center; align-items: center;
         }
@@ -25,13 +29,13 @@
         #app-container {
             position: relative;
             width: 100%; height: 100%;
-            max-width: 960px; max-height: 540px;
+            max-width: 900px; max-height: 506px;
             background-color: #000;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
             overflow: hidden;
         }
 
-        /* 遊戲畫布 - 像素化渲染以保持 Unpacking 的點陣風格 */
+        /* 遊戲畫布 - 強制像素化渲染 */
         canvas {
             display: block; width: 100%; height: 100%;
             image-rendering: -moz-crisp-edges;
@@ -47,103 +51,92 @@
             display: flex; flex-direction: column; justify-content: space-between;
         }
 
-        /* 頂部狀態列 (紙箱標籤風格) */
+        /* 頂部狀態列 */
         #top-bar {
-            padding: 15px 20px; display: flex; justify-content: space-between; align-items: flex-start;
+            padding: 15px; display: flex; justify-content: space-between; align-items: flex-start;
         }
         #level-text {
-            font-size: 16px; font-weight: bold; color: var(--text);
-            background: #f5f6fa; padding: 8px 16px; border-radius: 4px;
-            box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
-            position: relative;
+            font-size: 10px; color: var(--text-light); line-height: 1.5;
+            background: rgba(19, 15, 64, 0.8); padding: 8px 12px;
+            border: 2px solid var(--ui-border);
         }
-        /* 膠帶裝飾 */
-        #level-text::before {
-            content: ''; position: absolute; top: -5px; left: 50%; transform: translateX(-50%) rotate(-2deg);
-            width: 40px; height: 15px; background: rgba(255,255,255,0.6); border: 1px solid rgba(0,0,0,0.1);
-        }
-
         #progress-container {
-            width: 180px; height: 22px; background: #dcdde1;
-            border: 3px solid #718093; border-radius: 12px;
-            display: none; padding: 2px; overflow: hidden;
-            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2);
+            width: 150px; height: 16px; background: #000;
+            border: 2px solid #fff; display: none; padding: 2px;
         }
         #progress-bar {
-            width: 0%; height: 100%; background: #4bcffa;
-            border-radius: 6px; transition: width 0.1s;
-            box-shadow: inset 0 -4px 0 rgba(0,0,0,0.1);
+            width: 0%; height: 100%; background: var(--pee);
         }
 
-        /* 虛擬操作按鈕 */
+        /* 虛擬操作按鈕 (像素風格) */
         #controls {
-            padding: 15px 20px; display: flex; justify-content: space-between; align-items: flex-end;
+            padding: 15px; display: flex; justify-content: space-between; align-items: flex-end;
             pointer-events: auto; display: none;
         }
-        .btn-group { display: flex; gap: 12px; }
+        .btn-group { display: flex; gap: 10px; }
         .btn {
-            background: #f5f6fa; color: var(--text);
-            border: none; box-shadow: 0 6px 0 #dcdde1, 0 8px 10px rgba(0,0,0,0.2);
-            padding: 15px 20px; font-size: 16px; font-weight: bold; border-radius: 8px;
-            cursor: pointer; transition: transform 0.1s, box-shadow 0.1s;
-            font-family: inherit;
+            background: var(--btn-bg); color: var(--text-light);
+            border: 2px solid #fff; box-shadow: 2px 2px 0 #000;
+            padding: 12px 10px; font-size: 10px; font-family: 'Press Start 2P', monospace;
+            cursor: pointer; text-transform: uppercase;
         }
         .btn:active, .btn.active {
-            transform: translateY(6px); box-shadow: 0 0 0 #dcdde1, 0 2px 5px rgba(0,0,0,0.2);
+            transform: translate(2px, 2px); box-shadow: none;
+            background: var(--btn-hover); color: #000;
         }
-        #btn-pee { background: #ffdd59; box-shadow: 0 6px 0 #d2b638, 0 8px 10px rgba(0,0,0,0.2); width: 160px;}
-        #btn-pee:active, #btn-pee.active { transform: translateY(6px); box-shadow: 0 0 0 #d2b638; }
+        #btn-pee { background: #eb4d4b; }
+        #btn-pee:active, #btn-pee.active { background: var(--pee); color: #000; }
 
-        /* 全螢幕紙箱風格選單 */
+        /* 全螢幕覆蓋選單 (復古對話框 Dialogue Box) */
         #overlay-menu {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(47, 54, 64, 0.8);
+            background: rgba(0, 0, 0, 0.6);
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            pointer-events: auto; backdrop-filter: blur(3px);
+            pointer-events: auto;
         }
         
-        .cardboard-box {
-            background: #d1bfae; /* 紙箱色 */
-            border: 2px solid #a38c76;
-            padding: 40px; border-radius: 8px;
-            box-shadow: 10px 10px 0 rgba(0,0,0,0.3), inset 0 0 40px rgba(163, 140, 118, 0.3);
-            text-align: center; width: 80%; max-width: 450px;
-            position: relative;
-        }
-        /* 選單膠帶 */
-        .cardboard-box::after {
-            content: ''; position: absolute; top: -15px; right: -20px;
-            width: 100px; height: 30px; background: rgba(245, 246, 250, 0.7);
-            transform: rotate(15deg); border: 1px solid rgba(0,0,0,0.1);
+        .dialogue-box {
+            background: var(--ui-bg);
+            border: 4px solid #fff;
+            padding: 25px 20px;
+            box-shadow: inset 0 0 0 4px var(--ui-bg), inset 0 0 0 8px var(--ui-border), 6px 6px 0 rgba(0,0,0,0.8);
+            text-align: center;
+            width: 80%; max-width: 350px;
         }
 
         #menu-title { 
-            font-size: 32px; color: #4b3e31; margin: 0 0 10px 0; 
-            font-family: 'DotGothic16', sans-serif; text-shadow: 2px 2px 0 #fff;
+            font-size: 16px; color: var(--pee); margin: 0 0 20px 0; 
+            line-height: 1.5; text-shadow: 2px 2px 0 #000;
         }
         #menu-subtitle { 
-            font-size: 16px; color: #5f5246; margin-bottom: 30px; line-height: 1.6; font-weight: bold;
+            font-size: 8px; color: var(--text-light); margin-bottom: 30px; 
+            line-height: 2;
         }
         #menu-btn {
-            background: #4bcffa; color: #1e272e; border: none;
-            padding: 12px 30px; font-size: 20px; font-weight: bold; border-radius: 4px;
-            box-shadow: 0 6px 0 #0fb9b1; cursor: pointer; transition: 0.1s;
+            background: transparent; color: #fff; border: none;
+            font-size: 12px; font-family: 'Press Start 2P', monospace;
+            cursor: pointer; padding: 10px; position: relative;
         }
-        #menu-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #0fb9b1; }
+        #menu-btn::before {
+            content: '▶'; position: absolute; left: -15px; top: 10px;
+            color: var(--pee); opacity: 0; animation: blink 0.8s infinite;
+        }
+        #menu-btn:hover::before { opacity: 1; }
+        #menu-btn:active { color: var(--pee); }
+
+        @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
 
         @media (max-width: 600px) {
-            #menu-title { font-size: 24px; }
-            #menu-subtitle { font-size: 14px; }
-            .cardboard-box { padding: 25px; }
-            .btn { font-size: 14px; padding: 12px; }
-            #btn-pee { width: 140px; }
+            #menu-title { font-size: 14px; }
+            #menu-subtitle { font-size: 7px; }
+            .btn { font-size: 8px; padding: 10px 8px; }
         }
     </style>
 </head>
 <body>
     <div id="app-container">
-        <!-- 遊戲主畫布 -->
-        <canvas id="gameCanvas" width="640" height="360"></canvas>
+        <!-- 原生 Canvas 畫布 (低解析度 400x225 創造像素感) -->
+        <canvas id="gameCanvas" width="400" height="225"></canvas>
         
         <!-- UI 控制圖層 -->
         <div id="ui-layer">
@@ -153,426 +146,391 @@
             </div>
             <div id="controls">
                 <div class="btn-group">
-                    <button class="btn" id="btn-left">◀ 左</button>
-                    <button class="btn" id="btn-right">右 ▶</button>
+                    <button class="btn" id="btn-left">◀ LEFT</button>
+                    <button class="btn" id="btn-right">RIGHT ▶</button>
                 </div>
-                <button class="btn" id="btn-pee">💦 偷偷尿尿</button>
+                <button class="btn" id="btn-pee">PEE (HOLD)</button>
             </div>
         </div>
 
-        <!-- 紙箱風格選單 -->
+        <!-- 復古對話框選單 -->
         <div id="overlay-menu">
-            <div class="cardboard-box">
-                <h1 id="menu-title">別尿在地毯上<br>Unpacking Edition</h1>
-                <div id="menu-subtitle">長按 [尿尿] 解放自己。<br>利用家具躲避主人的視線！</div>
-                <button id="menu-btn">► 開箱遊玩</button>
+            <div class="dialogue-box">
+                <h1 id="menu-title">STEALTH DOG<br>16-BIT</h1>
+                <div id="menu-subtitle">HIDE IN SHADOWS.<br>AVOID THE OWNER.</div>
+                <button id="menu-btn">CONTINUE</button>
             </div>
         </div>
     </div>
 
     <script>
         /**
-         * Unpacking 風格引擎
-         * 使用 Offscreen Pre-rendering 技術產生高細節像素物件
+         * 復古 8-bit / 16-bit 遊戲核心邏輯
+         * 座標與尺寸皆為原生版的一半，以適應 400x225 的低解析度畫布
          */
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        ctx.imageSmoothingEnabled = false; // 保持邊緣清晰
         
-        const ui = {
-            overlay: document.getElementById('overlay-menu'),
-            title: document.getElementById('menu-title'),
-            sub: document.getElementById('menu-subtitle'),
-            btn: document.getElementById('menu-btn'),
-            controls: document.getElementById('controls'),
-            progCont: document.getElementById('progress-container'),
-            progBar: document.getElementById('progress-bar'),
-            levelText: document.getElementById('level-text'),
-            left: document.getElementById('btn-left'),
-            right: document.getElementById('btn-right'),
-            pee: document.getElementById('btn-pee')
+        const menuOverlay = document.getElementById('overlay-menu');
+        const menuTitle = document.getElementById('menu-title');
+        const menuSubtitle = document.getElementById('menu-subtitle');
+        const menuBtn = document.getElementById('menu-btn');
+        const controls = document.getElementById('controls');
+        const progressContainer = document.getElementById('progress-container');
+        const progressBar = document.getElementById('progress-bar');
+        const levelText = document.getElementById('level-text');
+
+        const btnLeft = document.getElementById('btn-left');
+        const btnRight = document.getElementById('btn-right');
+        const btnPee = document.getElementById('btn-pee');
+
+        // 柔和的藍紫像素調色盤
+        const PALETTE = {
+            dogDark: '#192a56', dogLight: '#e1b12c',
+            ownerBody: '#40739e', ownerSkin: '#fbc531', ownerPants: '#273c75',
+            vision: 'rgba(251, 197, 49, 0.3)', visionDanger: 'rgba(232, 65, 24, 0.5)',
+            floor: '#2c2c54', rug: '#6a89cc'
         };
 
-        // --- 資源庫與預渲染系統 ---
-        const ASSETS = {};
-        
-        function createSprite(id, w, h, drawFn) {
-            let c = document.createElement('canvas');
-            c.width = w; c.height = h;
-            let cx = c.getContext('2d');
-            cx.imageSmoothingEnabled = false;
-            drawFn(cx, w, h);
-            ASSETS[id] = c;
-
-            // 自動建立翻轉版本給角色使用
-            let cf = document.createElement('canvas');
-            cf.width = w; cf.height = h;
-            let cxf = cf.getContext('2d');
-            cxf.imageSmoothingEnabled = false;
-            cxf.translate(w, 0); cxf.scale(-1, 1);
-            cxf.drawImage(c, 0, 0);
-            ASSETS[id + '_f'] = cf;
-        }
-
-        // 輔助繪圖：立體感矩形 (Unpacking 風格的微斜角邊框)
-        function drawIsoRect(ctx, x, y, w, h, baseColor, highlight, shadow) {
-            ctx.fillStyle = baseColor; ctx.fillRect(x, y, w, h);
-            ctx.fillStyle = highlight; ctx.fillRect(x, y, w, 2); ctx.fillRect(x, y, 2, h);
-            ctx.fillStyle = shadow; ctx.fillRect(x, y + h - 2, w, 2); ctx.fillRect(x + w - 2, y, 2, h);
-        }
-
-        // --- 預渲染物件生成 ---
-        function generateAssets() {
-            // 1. 活頁夾書櫃 (參考圖右側)
-            createSprite('shelf', 100, 110, (cx, w, h) => {
-                // 木頭主體
-                drawIsoRect(cx, 0, 0, w, h, '#bca280', '#d1bfae', '#8a7155');
-                // 內部陰影
-                cx.fillStyle = '#7a6349'; cx.fillRect(5, 5, w-10, h-10);
-                
-                // 層板
-                drawIsoRect(cx, 5, 50, w-10, 8, '#bca280', '#d1bfae', '#8a7155');
-                
-                // 下層：紫色厚書與雜物
-                drawIsoRect(cx, 15, 65, 30, 40, '#8e44ad', '#9b59b6', '#5e336b'); // 紫色書
-                cx.fillStyle = '#ecf0f1'; cx.fillRect(40, 68, 4, 34); // 書頁
-                
-                // 下層：活頁夾 (黑色線圈本)
-                for(let i=0; i<4; i++) {
-                    let bx = 55 + i*9;
-                    drawIsoRect(cx, bx, 65, 8, 40, '#2f3640', '#718093', '#1e272e'); // 黑色封面
-                    cx.fillStyle = '#ecf0f1'; cx.fillRect(bx+2, 65, 4, 40); // 白色標籤區
-                    // 線圈
-                    cx.fillStyle = '#000';
-                    for(let j=0; j<8; j++) { cx.fillRect(bx-2, 68 + j*4.5, 4, 2); }
-                }
-
-                // 上層：幾本書與盒子
-                drawIsoRect(cx, 10, 15, 12, 35, '#e1b12c', '#fbc531', '#c28f1b');
-                drawIsoRect(cx, 22, 18, 10, 32, '#44bd32', '#4cd137', '#2f8722');
-                drawIsoRect(cx, 40, 25, 30, 25, '#c23616', '#e84118', '#8a240f'); // 紅色紙盒
-                cx.fillStyle = '#f5f6fa'; cx.fillRect(40, 35, 30, 2); // 膠帶
-            });
-
-            // 2. 原木高架床 (參考圖左側)
-            createSprite('loftbed', 160, 160, (cx, w, h) => {
-                const wood = '#d1ccc0', wH = '#f1f2f6', wS = '#a4b0be';
-                
-                // 桌面與支架 (底層)
-                drawIsoRect(cx, 20, 100, 100, 8, wood, wH, wS); // 桌面
-                drawIsoRect(cx, 120, 80, 25, 80, wood, wH, wS); // 右側層架背板
-                drawIsoRect(cx, 120, 110, 25, 5, wood, wH, wS); // 右側層架板
-                drawIsoRect(cx, 120, 140, 25, 5, wood, wH, wS);
-                
-                // 桌上物品 (筆記本、筆筒)
-                drawIsoRect(cx, 40, 95, 25, 5, '#4cd137', '#44bd32', '#2f8722'); // 綠色筆記本
-                drawIsoRect(cx, 30, 85, 8, 15, '#e84393', '#fd79a8', '#b71540'); // 筆筒
-                
-                // 高架床主體 (上層)
-                drawIsoRect(cx, 10, 45, 140, 20, wood, wH, wS); // 床架邊框
-                
-                // 紫色床墊與條紋
-                drawIsoRect(cx, 15, 40, 130, 20, '#8e44ad', '#9b59b6', '#5e336b');
-                cx.fillStyle = '#6c5ce7'; cx.fillRect(45, 40, 20, 20); cx.fillRect(95, 40, 20, 20); // 條紋
-                
-                // 白色枕頭
-                drawIsoRect(cx, 20, 30, 35, 15, '#f5f6fa', '#fff', '#dcdde1');
-                
-                // 床上玩偶 (藍色恐龍、粉色小豬)
-                cx.fillStyle = '#0984e3'; cx.fillRect(65, 32, 15, 12); cx.fillRect(75, 25, 10, 10); // 恐龍
-                cx.fillStyle = '#fd79a8'; cx.fillRect(90, 35, 12, 10); cx.fillRect(92, 30, 8, 6); // 小豬
-                
-                // 梯子
-                drawIsoRect(cx, 100, 45, 8, 115, wood, wH, wS); // 左桿
-                drawIsoRect(cx, 112, 45, 8, 115, wood, wH, wS); // 右桿
-                for(let i=0; i<4; i++) { drawIsoRect(cx, 108, 70 + i*22, 4, 6, wood, wH, wS); } // 踏板
-                
-                // 柱子
-                drawIsoRect(cx, 5, 25, 8, 135, wood, wH, wS); // 左前
-                drawIsoRect(cx, 145, 25, 8, 135, wood, wH, wS); // 右前
-            });
-
-            // 3. 一般沙發 (客廳用)
-            createSprite('sofa', 120, 70, (cx, w, h) => {
-                const base = '#1dd1a1', hl = '#10ac84', sh = '#01a3a4';
-                drawIsoRect(cx, 10, 10, w-20, h-10, base, hl, sh); // 椅背
-                drawIsoRect(cx, 15, h-30, w-30, 20, hl, '#1dd1a1', sh); // 坐墊
-                drawIsoRect(cx, 0, 20, 20, h-20, base, hl, sh); // 左扶手
-                drawIsoRect(cx, w-20, 20, 20, h-20, base, hl, sh); // 右扶手
-            });
-
-            // 4. 狗狗 (參考實體照：黑底、棕斑、粉紅胸背帶)
-            createSprite('dog', 40, 40, (cx, w, h) => {
-                // 主體黑色
-                cx.fillStyle = '#1e272e'; cx.fillRect(5, 15, 24, 14); // 身體
-                cx.fillRect(20, 5, 14, 12); // 頭
-                cx.fillRect(24, 1, 4, 6); cx.fillRect(30, 1, 4, 6); // 耳朵
-                cx.fillRect(2, 10, 5, 8); // 尾巴
-                
-                // 棕色斑點
-                cx.fillStyle = '#e1b12c'; 
-                cx.fillRect(30, 10, 6, 6); // 鼻子區
-                cx.fillRect(24, 3, 2, 2); cx.fillRect(30, 3, 2, 2); // 眉毛
-                
-                // 腳
-                cx.fillRect(8, 29, 4, 10); cx.fillRect(20, 29, 4, 10); // 前後腳
-
-                // 粉色胸背帶 (Harness)
-                cx.fillStyle = '#fd79a8'; 
-                cx.fillRect(15, 15, 4, 14); // 繞胸
-                cx.fillRect(20, 17, 6, 3);  // 繞頸
-                
-                // 眼睛與鼻子
-                cx.fillStyle = '#000'; cx.fillRect(28, 7, 2, 2); // 眼
-                cx.fillRect(34, 10, 2, 2); // 鼻頭
-            });
-
-            // 狗狗尿尿動作
-            createSprite('dog_pee', 40, 40, (cx, w, h) => {
-                cx.fillStyle = '#1e272e'; 
-                cx.translate(0, 4); // 身體微蹲
-                cx.fillRect(5, 15, 24, 14); cx.fillRect(20, 5, 14, 12); 
-                cx.fillRect(24, 1, 4, 6); cx.fillRect(30, 1, 4, 6); cx.fillRect(2, 10, 5, 8);
-                
-                cx.fillStyle = '#e1b12c'; cx.fillRect(30, 10, 6, 6); 
-                cx.fillRect(24, 3, 2, 2); cx.fillRect(30, 3, 2, 2);
-                
-                // 抬腿動作
-                cx.fillRect(20, 29, 4, 8); // 前腳
-                cx.fillRect(0, 25, 8, 4);  // 抬高的後腳
-                
-                cx.fillStyle = '#fd79a8'; cx.fillRect(15, 15, 4, 14); cx.fillRect(20, 17, 6, 3);
-                cx.fillStyle = '#000'; cx.fillRect(28, 7, 2, 2); cx.fillRect(34, 10, 2, 2);
-            });
-
-            // 5. 主人
-            createSprite('owner', 30, 75, (cx, w, h) => {
-                cx.fillStyle = '#2f3640'; cx.fillRect(6, 40, 8, 35); cx.fillRect(16, 40, 8, 35); // 深色長褲
-                cx.fillStyle = '#487eb0'; cx.fillRect(4, 15, 22, 25); // 藍色上衣
-                cx.fillStyle = '#fbc531'; cx.fillRect(8, 0, 14, 15); // 皮膚
-                cx.fillStyle = '#1e272e'; cx.fillRect(8, 0, 14, 5); // 頭髮
-                cx.fillStyle = '#000'; cx.fillRect(16, 6, 2, 2); // 眼睛
-            });
-        }
-
-        // --- 遊戲資料與狀態 ---
+        // 關卡設計 (尺寸縮半)
         const LEVELS = [
             {
-                name: "關卡 1: 客廳沙發區", bgCol: '#c7ecee', wallLine: '#81ecec', floor: '#d1ccc0', rug: '#ffb8b8',
-                obstacles: [ { x: 250, w: 120, h: 70, type: 'sofa' }, { x: 450, w: 100, h: 110, type: 'shelf' } ],
-                ownerSpeed: 50, patrol: [550, 100], vision: 220
+                name: "STAGE 1: LIVING ROOM", bg: '#341f97', 
+                obstacles: [ { x: 125, w: 60, h: 40, type: 'sofa', color: '#ff9ff3' }, { x: 275, w: 50, h: 35, type: 'cabinet', color: '#00d2d3' } ],
+                ownerSpeed: 40, patrol: [325, 50], vision: 140
             },
             {
-                name: "關卡 2: 書房角落", bgCol: '#ffeaa7', wallLine: '#ffeaa7', floor: '#e1b12c', rug: '#7bed9f',
-                obstacles: [ { x: 300, w: 100, h: 110, type: 'shelf' } ],
-                ownerSpeed: 70, patrol: [600, 50], vision: 280
+                name: "STAGE 2: DINING", bg: '#5f27cd',
+                obstacles: [ { x: 175, w: 45, h: 40, type: 'table', color: '#48dbfb' } ],
+                ownerSpeed: 55, patrol: [350, 25], vision: 175
             },
             {
-                name: "關卡 3: 臥室高架床", bgCol: '#82ccdd', wallLine: '#60a3bc', floor: '#c8d6e5', rug: '#b71540',
-                obstacles: [ { x: 280, w: 160, h: 160, type: 'loftbed' } ],
-                ownerSpeed: 90, patrol: [600, 50, 350, 50], vision: 320
+                name: "STAGE 3: BEDROOM", bg: '#222f3e', 
+                obstacles: [ { x: 150, w: 70, h: 35, type: 'bed', color: '#54a0ff' } ],
+                ownerSpeed: 75, patrol: [350, 25, 225, 25], vision: 200
             }
         ];
 
         let state = {
-            screen: 'menu', levelIdx: 0, progress: 0, maxProgress: 100, time: 0, lastTime: 0
+            screen: 'menu', levelIdx: 0, progress: 0, maxProgress: 100, time: 0, lastFrameTime: 0
         };
 
-        let dog = { x: 50, y: 280, dir: 1, speed: 180, isMoving: false, isPeeing: false };
-        let owner = { x: 550, y: 245, dir: -1, patrolIdx: 0, visionEnd: 0, hitObs: false, isAlert: false };
+        let dog = { x: 50, y: 180, dir: 1, speed: 100, isMoving: false, isPeeing: false };
+        let owner = { x: 350, y: 170, dir: -1, patrolIdx: 0 };
         let particles = [];
         let input = { left: false, right: false, pee: false };
 
-        // --- 繪圖邏輯 ---
-        function drawBackground(dt) {
-            const lvl = LEVELS[state.levelIdx];
-            
-            // 牆壁與條紋壁紙
-            ctx.fillStyle = lvl.bgCol; ctx.fillRect(0, 0, canvas.width, 220);
-            ctx.fillStyle = lvl.wallLine;
-            for(let i=0; i<canvas.width; i+=40) { ctx.fillRect(i, 0, 20, 220); }
-            
-            // 踢腳板
-            ctx.fillStyle = '#f5f6fa'; ctx.fillRect(0, 220, canvas.width, 10);
-            ctx.fillStyle = '#dcdde1'; ctx.fillRect(0, 229, canvas.width, 1);
+        // 背景特效資料 (星星與雲朵)
+        let stars = Array.from({length: 40}, () => ({
+            x: Math.random() * 400, y: Math.random() * 120, 
+            size: Math.random() > 0.8 ? 2 : 1, timer: Math.random() * Math.PI * 2
+        }));
+        let clouds = [
+            { x: 50, y: 30, speed: 5, shape: [[0,0,40,20], [10,-10,20,10], [-10,10,60,10]] },
+            { x: 250, y: 60, speed: 8, shape: [[0,0,30,15], [5,-8,15,8], [-5,8,45,8]] },
+            { x: -50, y: 80, speed: 3, shape: [[0,0,50,25], [15,-12,25,12], [-15,12,80,12]] }
+        ];
 
-            // 木地板
-            ctx.fillStyle = lvl.floor; ctx.fillRect(0, 230, canvas.width, 130);
-            ctx.fillStyle = 'rgba(0,0,0,0.05)';
-            for(let i=240; i<360; i+=20) { ctx.fillRect(0, i, canvas.width, 2); } // 木板接縫
-
-            // 地毯 (中心繪製，帶有流蘇)
-            let rugX = 80, rugW = 480;
-            ctx.fillStyle = lvl.rug; ctx.fillRect(rugX, 260, rugW, 70);
-            // 點陣花紋
-            ctx.fillStyle = 'rgba(255,255,255,0.3)';
-            for(let i=rugX+20; i<rugX+rugW-20; i+=30) { ctx.fillRect(i, 280, 10, 10); ctx.fillRect(i+15, 295, 10, 10); }
-            // 流蘇
-            ctx.fillStyle = '#f5f6fa';
-            for(let i=rugX; i<rugX+rugW; i+=10) { ctx.fillRect(i, 255, 4, 5); ctx.fillRect(i, 330, 4, 5); }
+        // --- 繪圖函數：像素風格 ---
+        function drawPixelRect(x, y, w, h, color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(Math.floor(x), Math.floor(y), Math.floor(w), Math.floor(h));
         }
 
-        function drawGame() {
-            drawBackground();
-            const lvl = LEVELS[state.levelIdx];
+        function drawSky(time, dt) {
+            // 背景漸層
+            let gradient = ctx.createLinearGradient(0, 0, 0, 150);
+            // 修復：Canvas 無法直接解析 CSS 變數字串，替換為實際的十六進位色碼
+            gradient.addColorStop(0, '#2c2c54');
+            gradient.addColorStop(1, '#706fd3');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 400, 225);
 
-            // 家具
-            lvl.obstacles.forEach(obs => {
-                let sy = 320 - obs.h; // 對齊地板
-                ctx.drawImage(ASSETS[obs.type], obs.x, sy);
+            // 閃爍星星
+            ctx.fillStyle = '#fff';
+            stars.forEach(s => {
+                s.timer += dt * 3;
+                if (Math.sin(s.timer) > 0) {
+                    drawPixelRect(s.x, s.y, s.size, s.size, '#fff');
+                }
             });
 
-            // 尿尿水滴
-            ctx.fillStyle = '#ffdd59';
-            particles.forEach(p => { ctx.fillRect(p.x, p.y, 4, 4); });
+            // 移動像素雲朵
+            clouds.forEach(c => {
+                c.x += c.speed * dt;
+                if (c.x > 450) c.x = -80;
+                c.shape.forEach(rect => {
+                    drawPixelRect(c.x + rect[0], c.y + rect[1], rect[2], rect[3], 'rgba(200, 214, 229, 0.4)');
+                });
+            });
+        }
 
-            // 狗狗
-            let dogSprite = (dog.isPeeing ? 'dog_pee' : 'dog') + (dog.dir < 0 ? '_f' : '');
-            let dogBounce = (dog.isMoving && !dog.isPeeing && Math.sin(state.time * 20) > 0) ? -3 : 0;
-            ctx.drawImage(ASSETS[dogSprite], dog.x - 20, dog.y + dogBounce - 40);
+        function drawDog(x, y, dir, isMoving, isPeeing, time) {
+            ctx.save();
+            ctx.translate(Math.floor(x), Math.floor(y));
+            if (dir < 0) ctx.scale(-1, 1);
+            
+            let bounce = (isMoving && !isPeeing) ? (Math.sin(time * 20) > 0 ? 2 : 0) : 0;
+            ctx.translate(0, -bounce);
 
-            // 視線 (黃色半透明多邊形)
-            if (state.screen === 'playing' || state.screen === 'gameover') {
-                let eyeX = owner.x + (owner.dir > 0 ? 15 : -15);
-                let eyeY = owner.y - 60;
-                
-                ctx.fillStyle = state.screen === 'gameover' ? 'rgba(232, 65, 24, 0.4)' : 'rgba(251, 197, 49, 0.25)';
-                ctx.beginPath();
-                ctx.moveTo(eyeX, eyeY - 10); ctx.lineTo(eyeX, eyeY + 10);
-                ctx.lineTo(owner.visionEnd, eyeY + (owner.hitObs ? 10 : 120));
-                ctx.lineTo(owner.visionEnd, eyeY - 30);
-                ctx.closePath(); ctx.fill();
+            // 身體
+            drawPixelRect(-15, -10, 30, 15, PALETTE.dogDark);
+            
+            // 腳
+            if (isPeeing) {
+                drawPixelRect(5, 5, 4, 10, PALETTE.dogLight);  // 前腳
+                drawPixelRect(-15, 2, 10, 4, PALETTE.dogLight); // 抬起的後腳
+            } else {
+                let legAnim = isMoving ? (Math.sin(time * 20) > 0 ? 3 : -3) : 0;
+                drawPixelRect(-12 + legAnim, 5, 4, 10, PALETTE.dogLight);
+                drawPixelRect(8 - legAnim, 5, 4, 10, PALETTE.dogLight);
             }
 
-            // 主人
-            let ownerSprite = 'owner' + (owner.dir < 0 ? '_f' : '');
-            let ownerBounce = (!owner.isAlert && Math.sin(state.time * 15) > 0) ? -2 : 0;
-            if (owner.isAlert) ownerBounce = Math.sin(state.time * 50) > 0 ? 3 : -3; // 發現時發抖
-            ctx.drawImage(ASSETS[ownerSprite], owner.x - 15, owner.y + ownerBounce - 75);
+            // 頭部與耳朵
+            if (isPeeing) { ctx.translate(0, 3); }
+            drawPixelRect(10, -18, 14, 14, PALETTE.dogDark); // 頭
+            drawPixelRect(24, -10, 6, 6, PALETTE.dogLight);  // 鼻子
+            drawPixelRect(28, -10, 2, 2, '#000');           // 鼻頭
+            drawPixelRect(5, -24, 4, 6, PALETTE.dogDark);    // 耳朵
+            drawPixelRect(12, -22, 6, 2, PALETTE.dogLight);  // 眉毛
+            drawPixelRect(16, -14, 2, 2, '#fff');           // 眼睛
 
-            // 驚嘆號
-            if (owner.isAlert) {
-                ctx.fillStyle = '#e84118'; ctx.fillRect(owner.x-4, owner.y-110, 8, 20); ctx.fillRect(owner.x-4, owner.y-85, 8, 8);
+            // 尾巴
+            let tailY = isPeeing ? -5 : (Math.sin(time*15) > 0 ? -12 : -8);
+            drawPixelRect(-22, tailY, 8, 4, PALETTE.dogDark);
+
+            ctx.restore();
+        }
+
+        function drawOwner(x, y, dir, isAlert, time) {
+            ctx.save();
+            ctx.translate(Math.floor(x), Math.floor(y));
+            
+            if (isAlert) { ctx.translate((Math.sin(time * 50) > 0 ? 2 : -2), 0); }
+            if (dir < 0) ctx.scale(-1, 1);
+
+            // 腳
+            let legAnim = (!isAlert) ? (Math.sin(time * 15) > 0 ? 3 : -3) : 0;
+            drawPixelRect(-6 + legAnim, 15, 4, 12, PALETTE.ownerPants);
+            drawPixelRect(2 - legAnim, 15, 4, 12, PALETTE.ownerPants);
+
+            // 身體
+            drawPixelRect(-8, -5, 16, 20, PALETTE.ownerBody);
+
+            // 頭
+            drawPixelRect(-7, -18, 14, 14, PALETTE.ownerSkin);
+            
+            // 眼睛
+            if (isAlert) {
+                drawPixelRect(3, -16, 4, 2, '#000'); // 生氣眉毛
+                drawPixelRect(5, -13, 2, 2, '#000');
+            } else {
+                drawPixelRect(5, -14, 2, 2, '#000');
+            }
+
+            // 驚嘆號 (像素版)
+            if (isAlert) {
+                drawPixelRect(-2, -35, 4, 10, '#e84118');
+                drawPixelRect(-2, -23, 4, 4, '#e84118');
+            }
+
+            ctx.restore();
+        }
+
+        function drawObstacle(obs) {
+            let cx = Math.floor(obs.x);
+            let cy = 185 - obs.h;
+            
+            if (obs.type === 'sofa') {
+                drawPixelRect(cx+5, cy+10, obs.w-10, obs.h-10, obs.color);
+                drawPixelRect(cx, cy+15, 10, obs.h-15, '#e84393');
+                drawPixelRect(cx+obs.w-10, cy+15, 10, obs.h-15, '#e84393');
+            } else if (obs.type === 'cabinet') {
+                drawPixelRect(cx, cy, obs.w, obs.h, obs.color);
+                drawPixelRect(cx+5, cy+5, obs.w/2-8, obs.h-10, '#01a3a4');
+                drawPixelRect(cx+obs.w/2+3, cy+5, obs.w/2-8, obs.h-10, '#01a3a4');
+            } else if (obs.type === 'table') {
+                drawPixelRect(cx+5, cy+5, 4, obs.h-5, '#0abde3');
+                drawPixelRect(cx+obs.w-9, cy+5, 4, obs.h-5, '#0abde3');
+                drawPixelRect(cx, cy, obs.w, 8, obs.color);
+            } else if (obs.type === 'bed') {
+                drawPixelRect(cx, cy, 8, obs.h, '#2e86de');
+                drawPixelRect(cx, cy+obs.h-15, obs.w, 15, obs.color);
+                drawPixelRect(cx+10, cy+obs.h-22, 15, 8, '#fff');
             }
         }
 
-        // --- 更新邏輯 ---
+        // --- 遊戲邏輯更新 ---
         function update(dt) {
             if (state.screen !== 'playing') return;
             state.time += dt;
-            const lvl = LEVELS[state.levelIdx];
+            const level = LEVELS[state.levelIdx];
 
-            dog.isMoving = false; dog.isPeeing = false;
+            dog.isMoving = false;
+            dog.isPeeing = false;
 
             if (input.pee) {
                 dog.isPeeing = true;
                 state.progress += dt * 25;
-                ui.progBar.style.width = Math.min((state.progress / state.maxProgress) * 100, 100) + '%';
+                progressBar.style.width = Math.min((state.progress / state.maxProgress) * 100, 100) + '%';
                 
+                // 產生像素水滴
                 if (Math.random() < 0.3) {
                     particles.push({
-                        x: dog.x + (dog.dir > 0 ? -15 : 15), y: dog.y - 15,
-                        vx: (Math.random() - 0.5) * 40, vy: 60 + Math.random() * 40, life: 1
+                        x: dog.x + (dog.dir > 0 ? -10 : 10), y: dog.y + 5,
+                        vx: (Math.random() - 0.5) * 30, vy: 50 + Math.random() * 30, life: 1
                     });
                 }
+
                 if (state.progress >= state.maxProgress) winLevel();
             } else {
                 if (input.left) { dog.x -= dog.speed * dt; dog.dir = -1; dog.isMoving = true; }
                 if (input.right) { dog.x += dog.speed * dt; dog.dir = 1; dog.isMoving = true; }
             }
-            if (dog.x < 30) dog.x = 30;
-            if (dog.x > 610) dog.x = 610;
+            if (dog.x < 15) dog.x = 15;
+            if (dog.x > 385) dog.x = 385;
 
-            // 主人移動
-            let targetX = lvl.patrol[owner.patrolIdx];
-            if (Math.abs(owner.x - targetX) < 3) {
-                owner.patrolIdx = (owner.patrolIdx + 1) % lvl.patrol.length;
+            // 更新主人
+            let targetX = level.patrol[owner.patrolIdx];
+            if (Math.abs(owner.x - targetX) < 2) {
+                owner.patrolIdx = (owner.patrolIdx + 1) % level.patrol.length;
             } else {
                 let moveDir = targetX > owner.x ? 1 : -1;
-                owner.x += moveDir * lvl.ownerSpeed * dt;
+                owner.x += moveDir * level.ownerSpeed * dt;
                 owner.dir = moveDir;
             }
 
-            // 粒子更新
+            // 更新水滴
             for (let i = particles.length - 1; i >= 0; i--) {
                 let p = particles[i];
                 p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt * 2;
-                if (p.life <= 0 || p.y > 320) particles.splice(i, 1);
+                if (p.life <= 0 || p.y > 185) particles.splice(i, 1);
             }
 
-            // 視線遮擋計算
-            let eyeX = owner.x + (owner.dir > 0 ? 15 : -15);
-            let closestObsX = owner.dir > 0 ? eyeX + lvl.vision : eyeX - lvl.vision;
-            owner.hitObs = false;
+            // 視線運算
+            let eyeX = owner.x + (owner.dir > 0 ? 8 : -8);
+            let closestObsX = owner.dir > 0 ? eyeX + level.vision : eyeX - level.vision;
+            let hitObstacle = false;
 
-            lvl.obstacles.forEach(obs => {
-                let leftEdge = obs.x, rightEdge = obs.x + obs.w;
+            level.obstacles.forEach(obs => {
+                let leftEdge = obs.x;
+                let rightEdge = obs.x + obs.w;
                 if (owner.dir > 0 && leftEdge > eyeX && leftEdge < closestObsX) {
-                    closestObsX = leftEdge; owner.hitObs = true;
+                    closestObsX = leftEdge; hitObstacle = true;
                 } else if (owner.dir < 0 && rightEdge < eyeX && rightEdge > closestObsX) {
-                    closestObsX = rightEdge; owner.hitObs = true;
+                    closestObsX = rightEdge; hitObstacle = true;
                 }
             });
-            owner.visionEnd = closestObsX;
 
-            // 判定被抓
+            owner.visionEnd = closestObsX;
+            owner.hitObstacle = hitObstacle;
+
+            // 判定發現
             let isDogInDir = (owner.dir > 0 && dog.x > eyeX) || (owner.dir < 0 && dog.x < eyeX);
-            if (isDogInDir && Math.abs(dog.x - eyeX) < lvl.vision) {
+            if (isDogInDir && Math.abs(dog.x - eyeX) < level.vision) {
                 let distToDog = Math.abs(dog.x - eyeX);
                 let distToObs = Math.abs(closestObsX - eyeX);
-                if (distToDog < distToObs + 15) { 
+                if (distToDog < distToObs + 8) { 
                     if (dog.isPeeing) gameOver();
                 }
             }
         }
 
-        // --- 主迴圈 ---
+        // --- 渲染畫面 ---
+        function draw() {
+            let dt = (Date.now() - state.lastFrameTime) / 1000 || 0;
+            const level = LEVELS[state.levelIdx] || LEVELS[0];
+            
+            drawSky(state.time, dt);
+            
+            // 牆壁下半部與地板
+            drawPixelRect(0, 150, 400, 35, level.bg);
+            drawPixelRect(0, 185, 400, 40, PALETTE.floor);
+            
+            // 地毯 (像素格紋)
+            drawPixelRect(20, 188, 360, 8, PALETTE.rug);
+            for(let i=20; i<380; i+=10) { drawPixelRect(i, 188, 5, 8, 'rgba(0,0,0,0.1)'); }
+
+            // 物件
+            level.obstacles.forEach(obs => drawObstacle(obs));
+
+            // 水滴
+            ctx.fillStyle = '#f1c40f'; // 修復：移除錯誤的變數指派語法
+            particles.forEach(p => { drawPixelRect(p.x, p.y, 2, 2, '#f1c40f'); });
+
+            // 角色
+            drawDog(dog.x, dog.y, dog.dir, dog.isMoving, dog.isPeeing, state.time);
+
+            // 視線 (多邊形)
+            if (state.screen === 'playing' || state.screen === 'gameover') {
+                let eyeX = Math.floor(owner.x + (owner.dir > 0 ? 8 : -8));
+                let eyeY = Math.floor(owner.y - 15);
+                let endX = Math.floor(owner.visionEnd);
+                
+                ctx.fillStyle = state.screen === 'gameover' ? PALETTE.visionDanger : PALETTE.vision;
+                ctx.beginPath();
+                ctx.moveTo(eyeX, eyeY - 5);
+                ctx.lineTo(eyeX, eyeY + 5);
+                ctx.lineTo(endX, eyeY + (owner.hitObstacle ? 5 : 40));
+                ctx.lineTo(endX, eyeY - 10);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            drawOwner(owner.x, owner.y, owner.dir, state.screen === 'gameover', state.time);
+        }
+
         function loop(timestamp) {
-            if (!state.lastTime) state.lastTime = timestamp;
-            let dt = (timestamp - state.lastTime) / 1000;
-            state.lastTime = timestamp;
-            if (dt > 0.1) dt = 0.1; // 避免切換視窗後的跳格
+            if (!state.lastFrameTime) state.lastFrameTime = timestamp;
+            let dt = (timestamp - state.lastFrameTime) / 1000;
+            state.lastFrameTime = timestamp;
+            if (dt > 0.1) dt = 0.1;
 
             update(dt);
-            drawGame();
+            draw();
             requestAnimationFrame(loop);
         }
 
-        // --- 流程控制 ---
+        // --- 流程與選單 ---
         function startGame() {
             state.screen = 'playing';
-            state.progress = 0; ui.progBar.style.width = '0%';
-            dog.x = 60; dog.dir = 1;
+            state.progress = 0; progressBar.style.width = '0%';
+            dog.x = 40; dog.dir = 1;
             const lvl = LEVELS[state.levelIdx];
-            owner.x = lvl.patrol[0]; owner.patrolIdx = 0; owner.dir = -1; owner.isAlert = false;
+            owner.x = lvl.patrol[0]; owner.patrolIdx = 0; owner.dir = -1;
             particles = [];
 
-            ui.overlay.style.display = 'none';
-            ui.controls.style.display = 'flex';
-            ui.progCont.style.display = 'block';
-            ui.levelText.innerText = lvl.name;
+            menuOverlay.style.display = 'none';
+            controls.style.display = 'flex';
+            progressContainer.style.display = 'block';
+            levelText.innerText = lvl.name;
         }
 
         function showMenu(title, sub, btnText, isAllClear) {
-            ui.title.innerHTML = title; ui.sub.innerHTML = sub; ui.btn.innerText = btnText;
-            ui.overlay.style.display = 'flex'; ui.progCont.style.display = 'none';
+            menuTitle.innerHTML = title;
+            menuSubtitle.innerHTML = sub;
+            menuBtn.innerText = btnText;
+            menuOverlay.style.display = 'flex';
+            progressContainer.style.display = 'none';
             if (isAllClear) state.levelIdx = 0;
+            menuBtn.onclick = startGame;
         }
 
         function gameOver() {
-            state.screen = 'gameover'; owner.isAlert = true;
-            ui.controls.style.display = 'none';
-            setTimeout(() => { showMenu("被抓包了！", "地毯又要送洗了...", "↺ 重新挑戰", false); }, 1500);
+            state.screen = 'gameover';
+            controls.style.display = 'none';
+            setTimeout(() => { showMenu("GAME OVER", "YOU WERE CAUGHT.", "CONTINUE", false); }, 1500);
         }
 
         function winLevel() {
-            state.screen = 'win'; ui.controls.style.display = 'none';
+            state.screen = 'win';
+            controls.style.display = 'none';
             setTimeout(() => {
                 state.levelIdx++;
                 if (state.levelIdx >= LEVELS.length) {
-                    showMenu("通關完成！", "你是完美的隱形大師。", "★ 再次遊玩", true);
+                    showMenu("YOU WIN!", "GOOD DOG.", "PLAY AGAIN", true);
                 } else {
-                    showMenu("完美解放！", "準備進入下一個房間...", "► 繼續開箱", false);
+                    showMenu("STAGE CLEAR", "READY FOR NEXT STAGE.", "CONTINUE", false);
                 }
             }, 1000);
         }
@@ -581,22 +539,27 @@
         function bindBtn(element, keyName) {
             const down = (e) => { e.preventDefault(); input[keyName] = true; element.classList.add('active'); };
             const up = (e) => { e.preventDefault(); input[keyName] = false; element.classList.remove('active'); };
-            element.addEventListener('mousedown', down); element.addEventListener('touchstart', down, {passive: false});
-            element.addEventListener('mouseup', up); element.addEventListener('mouseleave', up); element.addEventListener('touchend', up);
+            element.addEventListener('mousedown', down);
+            element.addEventListener('touchstart', down, {passive: false});
+            element.addEventListener('mouseup', up);
+            element.addEventListener('mouseleave', up);
+            element.addEventListener('touchend', up);
         }
-        bindBtn(ui.left, 'left'); bindBtn(ui.right, 'right'); bindBtn(ui.pee, 'pee');
+
+        bindBtn(btnLeft, 'left'); bindBtn(btnRight, 'right'); bindBtn(btnPee, 'pee');
 
         window.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') input.left = true; if (e.key === 'ArrowRight') input.right = true; if (e.key === ' ') input.pee = true;
+            if (e.key === 'ArrowLeft') input.left = true;
+            if (e.key === 'ArrowRight') input.right = true;
+            if (e.key === ' ' || e.key === 'Spacebar') input.pee = true;
         });
         window.addEventListener('keyup', (e) => {
-            if (e.key === 'ArrowLeft') input.left = false; if (e.key === 'ArrowRight') input.right = false; if (e.key === ' ') input.pee = false;
+            if (e.key === 'ArrowLeft') input.left = false;
+            if (e.key === 'ArrowRight') input.right = false;
+            if (e.key === ' ' || e.key === 'Spacebar') input.pee = false;
         });
 
-        ui.btn.onclick = startGame;
-
-        // --- 初始化 ---
-        generateAssets();
+        menuBtn.onclick = startGame;
         requestAnimationFrame(loop);
 
     </script>
